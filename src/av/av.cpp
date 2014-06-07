@@ -6,7 +6,7 @@
 #include <QThread>
 
 AV::AV(Tox* tox, QObject *parent)
-: QObject(parent), tox(tox), outputBuffer(256)
+: QObject(parent), tox(tox)
 {
     QAudioFormat format;
     format.setSampleRate(44100);
@@ -20,12 +20,10 @@ AV::AV(Tox* tox, QObject *parent)
 
     AudioInput* audioInput = new AudioInput(format);
     audioInput->moveToThread(audioThread);
-    connect(audioInput, &AudioInput::inputRecorded, this, &AV::handleAudioInput);
 
     AudioOutput* audioOutput = new AudioOutput(format);
     audioOutput->setVolume(0.2);
     audioOutput->moveToThread(audioThread);
-    connect(this, &AV::audioOutputReceived, audioOutput, &AudioOutput::output);
 
     connect(audioThread, &QThread::started, audioInput, &AudioInput::start);
     connect(audioThread, &QThread::started, audioOutput, &AudioOutput::start);
@@ -39,12 +37,4 @@ AV::~AV()
 void AV::start()
 {
     audioThread->start();
-}
-
-void AV::handleAudioInput(Ringbuffer *buffer)
-{
-    Ringbuffer::chunk_t chunk;
-    if (buffer->pop(chunk) && outputBuffer.push(chunk)) {
-        emit audioOutputReceived(&outputBuffer);
-    }
 }

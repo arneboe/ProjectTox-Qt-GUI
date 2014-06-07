@@ -15,9 +15,6 @@ public:
 private:
     QIODevice* device;
 
-public slots:
-    void output(Ringbuffer* buffer);
-
 };
 
 #endif // AUDIOOUTPUT_HPP

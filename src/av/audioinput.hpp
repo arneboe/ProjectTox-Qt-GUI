@@ -14,11 +14,7 @@ public:
     QIODevice* start();
 
 private:
-    Ringbuffer buffer;
     QIODevice* device;
-
-signals:
-    void inputRecorded(Ringbuffer* buffer);
 
 public slots:
     void readChunk();

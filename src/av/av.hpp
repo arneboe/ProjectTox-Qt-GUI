@@ -14,15 +14,8 @@ public:
     ~AV();
     void start();
 
-private slots:
-    void handleAudioInput(Ringbuffer* buffer);
-
-signals:
-    void audioOutputReceived(Ringbuffer* buffer);
-
 private:
     Tox* tox;
-    Ringbuffer outputBuffer;
     QThread* audioThread;
 
 };
