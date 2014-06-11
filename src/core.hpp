@@ -18,6 +18,7 @@
 #define CORE_HPP
 
 #include "status.hpp"
+#include "av/av.hpp"
 
 #include <tox/tox.h>
 
@@ -51,6 +52,7 @@ private:
     void checkLastOnline(int friendId);
 
     Tox* tox;
+    AV*  toxAv;
     QTimer* timer;
 
     static const QString CONFIG_FILE_NAME;

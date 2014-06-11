@@ -28,7 +28,7 @@ defineTest(minQtVersion) {
     error("Cannot build with Qt version $${QT_VERSION}, this project requires at least Qt 5.2.0")
 }
 
-QT       += core gui widgets
+QT       += core gui widgets multimedia
 
 TARGET = TOX-Qt-GUI
 TEMPLATE = app
@@ -43,9 +43,9 @@ win32 {
     LIBS += ../../libs/lib/libtoxcore.a -lws2_32 ../../libs/lib/libsodium.a
 } else {
     macx {
-        LIBS += -L/usr/local/lib -ltoxcore -lsodium
+        LIBS += -L/usr/local/lib -ltoxcore -ltoxav -lsodium
     } else {
-        LIBS += -ltoxcore -lsodium
+        LIBS += -ltoxav -ltoxcore -lsodium
     }
 }
 
@@ -106,7 +106,10 @@ SOURCES += \
     ../../src/messages/messagefilter.cpp \
     ../../src/messages/chatviewsearchwidget.cpp \
     ../../src/Settings/privacysettingspage.cpp \
-    ../../src/messages/typingitem.cpp
+    ../../src/messages/typingitem.cpp \
+    ../../src/av/av.cpp \
+    ../../src/av/audioinput.cpp \
+    ../../src/av/audiooutput.cpp \
 
 HEADERS  += \
     ../../src/mainwindow.hpp \
@@ -164,7 +167,11 @@ HEADERS  += \
     ../../src/messages/messagefilter.hpp \
     ../../src/messages/chatviewsearchwidget.hpp \
     ../../src/Settings/privacysettingspage.hpp \
-    ../../src/messages/typingitem.hpp
+    ../../src/messages/typingitem.hpp \
+    ../../src/av/av.hpp \
+    ../../src/av/ringbuffer.hpp \
+    ../../src/av/audioinput.hpp \
+    ../../src/av/audiooutput.hpp \
 
 RESOURCES += \
     ../../resources/resources.qrc

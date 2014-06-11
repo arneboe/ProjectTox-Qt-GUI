@@ -10,10 +10,12 @@ class AudioOutput : public QAudioOutput
     Q_OBJECT
 public:
     explicit AudioOutput(const QAudioFormat format, QObject *parent = 0);
+
     QIODevice* start();
+    QIODevice* getDevice();
 
 private:
-    QIODevice* device;
+    Ringbuffer<512 * 1024> device;
 
 };
 

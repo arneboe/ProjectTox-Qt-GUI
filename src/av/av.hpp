@@ -2,9 +2,14 @@
 #define AV_HPP
 
 #include "ringbuffer.hpp"
+#include "audioinput.hpp"
+#include "audiooutput.hpp"
 
 #include <QObject>
 #include <tox/tox.h>
+
+class AudioInput;
+class AudioOutput;
 
 class AV : public QObject
 {
@@ -16,7 +21,13 @@ public:
 
 private:
     Tox* tox;
+
     QThread* audioThread;
+    AudioInput* audioInput;
+    AudioOutput* audioOutput;
+
+private slots:
+    void handleAudioInput(int nbytes);
 
 };
 

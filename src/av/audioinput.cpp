@@ -1,5 +1,7 @@
 #include "audioinput.hpp"
 
+#include <QDebug>
+
 AudioInput::AudioInput(const QAudioFormat& format, QObject *parent)
 : QAudioInput(format, parent)
 {
@@ -7,13 +9,12 @@ AudioInput::AudioInput(const QAudioFormat& format, QObject *parent)
 
 QIODevice* AudioInput::start()
 {
-    device = QAudioInput::start();
-    connect(device, &QIODevice::readyRead, this, &AudioInput::readChunk);
-    return device;
+    device.open(QIODevice::ReadWrite);
+    QAudioInput::start(&device);
+    return &device;
 }
 
-
-void AudioInput::readChunk()
+QIODevice* AudioInput::getDevice()
 {
-    const size_t n = bytesReady();
+    return &device;
 }

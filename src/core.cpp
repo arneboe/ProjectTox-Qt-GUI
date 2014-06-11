@@ -348,6 +348,8 @@ void Core::start()
         return;
     }
 
+    toxAv = new AV(tox);
+
     loadConfiguration();
 
     tox_callback_friend_request(tox, onFriendRequest, this);
@@ -374,6 +376,7 @@ void Core::start()
 
     timer->setInterval(45);
     timer->start();
+    toxAv->start();
 }
 
 

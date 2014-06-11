@@ -20,17 +20,20 @@ public:
         const qint64 available = currentTail >= currentHead ?
             (capacity - (currentTail - currentHead)) - 1 :
             (currentHead - currentTail) - 1;
-        maxSize = std::min(maxSize, available);
 
+        maxSize = std::min(maxSize, available);
+        qint64 bytesToWrite = maxSize;
+        qint64 bytesAlreadyWritten = 0;
         size_t nextTail = currentTail + maxSize;
-        size_t offset = 0;
+
         if (nextTail >= capacity) {
-            offset = capacity - currentTail;
-            memcpy(buffer + currentTail, data, offset * sizeof(char));
+            bytesAlreadyWritten = capacity - currentTail;
+            bytesToWrite -= bytesAlreadyWritten;
+            memcpy(buffer + currentTail, data, bytesAlreadyWritten * sizeof(char));
             currentTail = 0;
             nextTail = nextTail % capacity;
         }
-        memcpy(buffer + currentTail, data + offset, maxSize * sizeof(char));
+        memcpy(buffer + currentTail, data + bytesAlreadyWritten, bytesToWrite * sizeof(char));
         tail.store(nextTail);
 
         emit bytesWritten(maxSize);
@@ -44,17 +47,20 @@ public:
         const qint64 contains =  currentHead <= currentTail ?
             currentTail - currentHead :
             capacity - (currentHead - currentTail);
-        maxSize = std::min(maxSize, contains);
 
+        maxSize = std::min(maxSize, contains);
+        qint64 bytesToRead = maxSize;
+        qint64 bytesAlreadyRead = 0;
         size_t nextHead = currentHead + maxSize;
-        size_t offset = 0;
+
         if (nextHead >= capacity) {
-            offset = capacity - currentHead;
-            std::copy(buffer + currentHead, buffer + currentHead + offset, data);
+            bytesAlreadyRead = capacity - currentHead;
+            bytesToRead -= bytesAlreadyRead;
+            memcpy(data, buffer + currentHead, bytesAlreadyRead * sizeof(char));
             currentHead = 0;
             nextHead = nextHead % capacity;
         }
-        memcpy(data + offset, buffer + currentHead, maxSize * sizeof(char));
+        memcpy(data + bytesAlreadyRead, buffer + currentHead, bytesToRead * sizeof(char));
         head.store(nextHead);
 
         return maxSize;

@@ -1,9 +1,7 @@
 #include "av.hpp"
 
-#include "audioinput.hpp"
-#include "audiooutput.hpp"
-
 #include <QThread>
+#include <QIODevice>
 
 AV::AV(Tox* tox, QObject *parent)
 : QObject(parent), tox(tox)
@@ -18,14 +16,12 @@ AV::AV(Tox* tox, QObject *parent)
 
     audioThread = new QThread(this);
 
-    AudioInput* audioInput = new AudioInput(format);
+    audioInput = new AudioInput(format);
     audioInput->moveToThread(audioThread);
-
-    AudioOutput* audioOutput = new AudioOutput(format);
-    audioOutput->setVolume(0.2);
-    audioOutput->moveToThread(audioThread);
-
     connect(audioThread, &QThread::started, audioInput, &AudioInput::start);
+
+    audioOutput = new AudioOutput(format);
+    audioOutput->moveToThread(audioThread);   
     connect(audioThread, &QThread::started, audioOutput, &AudioOutput::start);
 }
 
@@ -37,4 +33,12 @@ AV::~AV()
 void AV::start()
 {
     audioThread->start();
+    connect(audioInput->getDevice(), &QIODevice::bytesWritten, this, &AV::handleAudioInput);
+}
+
+void AV::handleAudioInput(int nbytes)
+{
+    QByteArray input(nbytes, 0);
+    nbytes = audioInput->getDevice()->read(input.data(), nbytes);
+    audioOutput->getDevice()->write(input.data(), nbytes);
 }

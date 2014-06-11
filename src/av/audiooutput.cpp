@@ -7,6 +7,12 @@ AudioOutput::AudioOutput(const QAudioFormat format, QObject *parent) :
 
 QIODevice* AudioOutput::start()
 {
-    device = QAudioOutput::start();
-    return device;
+    device.open(QIODevice::ReadWrite);
+    QAudioOutput::start(&device);
+    return &device;
+}
+
+QIODevice* AudioOutput::getDevice()
+{
+    return &device;
 }
