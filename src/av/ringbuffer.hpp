@@ -11,7 +11,10 @@ class Ringbuffer : public QIODevice
 {
 public:
     enum {capacity = SIZE + 1};
-    Ringbuffer(QObject* parent = 0) : QIODevice(parent), tail(0), head(0) {}
+    Ringbuffer(QObject* parent = 0) : QIODevice(parent), tail(0), head(0)
+    {
+        static_assert(SIZE > 0, "Ringbuffer should have a size > 0");
+    }
 
     qint64 writeData(const char *data, qint64 maxSize)
     {
