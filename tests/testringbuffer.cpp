@@ -88,19 +88,14 @@ TEST_CASE("complex read write", "[ringbuffer]")
     REQUIRE(0 == nothing.size());
     char data[5] = {42, 43, 44, 45, 46};
     REQUIRE(5 == buffer.write(&data[0], 5));
-    //now the buffer should be full
-    REQUIRE(!buffer.isWritable());
     char read[3] = {-1};
     REQUIRE(3 == buffer.read(&read[0], 3));
     REQUIRE(read[0] == data[0]);
     REQUIRE(read[1] == data[1]);
     REQUIRE(read[2] == data[2]);
-    REQUIRE(buffer.isWritable());
-
     REQUIRE(3 == buffer.write(&data[0], 5));
     char read5[5] = {-1};
     REQUIRE(5 == buffer.read(&read5[0], 5));
-    REQUIRE(!buffer.isReadable());
     REQUIRE(read5[0] == data[3]);
     REQUIRE(read5[1] == data[4]);
     REQUIRE(read5[2] == data[0]);
